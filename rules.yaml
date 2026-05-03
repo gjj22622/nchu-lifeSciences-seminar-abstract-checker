@@ -49,6 +49,8 @@ format:
     word_count_max_cn: 500
     word_count_min_en: 250
     word_count_max_en: 500
+    # 5% 容忍：超過 max 但在 max*1.05 內 → 提醒（非必改）；老師通常允許略超
+    word_count_tolerance_pct: 5
 
 # ============================================================================
 # 風格 / AI 味禁用詞

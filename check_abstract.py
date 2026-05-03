@@ -288,10 +288,16 @@ class AbstractChecker:
         else:
             count, unit = en_words, "詞"
             mn, mx = cfg["word_count_min_en"], cfg["word_count_max_en"]
+        tol_pct = cfg.get("word_count_tolerance_pct", 0)
+        mx_tol = int(mx * (1 + tol_pct / 100))
         if mn <= count <= mx:
             self.add(PASS, "摘要字數", f"{count} {unit}（規範 {mn}–{mx}）")
+        elif mx < count <= mx_tol:
+            self.add(WARN, "摘要字數", f"{count} {unit}（超過 {mx} 但在 {tol_pct}% 容忍內 ≤{mx_tol}；老師通常接受）")
+        elif count < mn:
+            self.add(FAIL, "摘要字數", f"{count} {unit}，少於規範下限 {mn}")
         else:
-            self.add(FAIL, "摘要字數", f"{count} {unit}，應為 {mn}–{mx} {unit}")
+            self.add(FAIL, "摘要字數", f"{count} {unit}，超過 {tol_pct}% 容忍上限 {mx_tol}")
         # 對齊
         if p.alignment != WD_ALIGN_PARAGRAPH.JUSTIFY and cfg.get("alignment") == "justify":
             self.add(WARN, "摘要正文", "未設左右對齊（justify）")
