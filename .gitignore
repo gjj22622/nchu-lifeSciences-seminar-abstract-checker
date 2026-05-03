@@ -1,0 +1,36 @@
+# 規則快取（執行時自動產生，不入版控）
+.rules_cache.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.venv/
+venv/
+env/
+
+# 系統
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Word 暫存
+~$*.docx
+~$*.doc
+
+# 測試用個人摘要（不要把私人摘要入版控）
+測試_*.docx
+我的_*.docx
+my_*.docx

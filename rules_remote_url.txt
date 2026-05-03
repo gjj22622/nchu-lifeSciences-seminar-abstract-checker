@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/gjj22622/nchu-lifeSciences-seminar-abstract-checker/main/rules.yaml

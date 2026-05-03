@@ -1,0 +1,128 @@
+# =============================================================================
+# 中興大學生命科學系研究所博士班專題討論 — 摘要檢查規則
+# Single Source of Truth for the abstract checker
+# =============================================================================
+# 編輯本檔即可調整檢查規則，無需修改 Python 程式碼。
+# 重要：每次更新請同步調整 last_updated 與 valid_until 兩個欄位。
+# =============================================================================
+
+# ----- 版本資訊 -----
+version: "2026.05.03"
+last_updated: "2026-05-03"          # 規則上次更新日期
+valid_until: "2028-06-30"           # 超過此日期會跳警告，提醒使用者向學長姐確認最新規範
+spec_version: "114-1 學年度更新版"  # 規範對應的學年度
+
+maintainer:
+  name: "鐘基啓"
+  email: "gjj22622@gmail.com"
+  note: "原作者，畢業後可能無法回覆。請洽當屆系辦或學長姐。"
+
+sources:
+  - "摘要繕寫模式（114-1 學年度老師更新版 docx）"
+  - "https://zoolstud.sinica.edu.tw/page.php?id=7"
+
+# ============================================================================
+# 版面規格
+# ============================================================================
+format:
+  margin_cm: 2.0
+  margin_tolerance_cm: 0.05
+  title:
+    font_size_pt: 16
+    bold: true
+    alignment: center
+  speaker_info:
+    alignment: right
+    require_name: true
+    require_student_id: true
+    require_date: true
+    student_id_pattern: "\\d{8,12}"
+    date_patterns:
+      - "\\d{1,2}/\\d{1,2}/\\d{4}"
+      - "\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}"
+  abstract_body:
+    font_size_pt: 12
+    line_spacing: 1.5
+    first_line_indent_cm: 1.0
+    alignment: justify
+    word_count_min_cn: 300
+    word_count_max_cn: 500
+    word_count_min_en: 250
+    word_count_max_en: 500
+
+# ============================================================================
+# 風格 / AI 味禁用詞
+# ============================================================================
+style:
+  ai_bad_words_cn:
+    - "系統性文獻回顧"
+    - "賦能"
+    - "賦予"
+    - "全面探討"
+    - "深度剖析"
+    - "綜合性"
+    - "全面性"
+    - "深入探討"
+    - "深入剖析"
+  ai_bad_words_en:
+    - "comprehensive review"
+    - "in-depth review"
+    - "systematic literature review"
+    - "this paper aims to"
+    - "this study aims to"
+  forbidden_in_title:
+    - "："
+    - ":"
+  # 若摘要出現新名詞，建議在第 3 段以完整單句正式定義
+  new_term_definition:
+    enabled: false  # 預設關閉；學弟妹若有新名詞研究，自行打開並填寫 terms
+    terms: []
+    must_contain_any_of:
+      - "定義"
+      - "defined"
+      - "definition"
+
+# ============================================================================
+# 引用文獻規範（Zoological Studies 格式）
+# ============================================================================
+reference:
+  et_al_threshold: 4              # 達 4 位作者起用 et al.
+  et_al_list_count: 3             # 列前 3 位 + et al.
+  journal_abbrev_no_dot: true     # 期刊縮寫無句點
+  volume_must_be_bold: true       # 卷號粗體
+  doi_should_appear: false        # 114-1 老師更新版範例皆無 DOI
+  hyphen_in_pages_severity: warn  # warn / fail / off
+  title_case_severity: warn       # 偵測標題 title case 給警告
+  must_have_main_reference_bold: true   # 主要參考須整條粗體
+  must_be_alphabetical_by_lastname: true
+  # sentence case 例外（保留原大寫的詞彙）
+  sentence_case_exceptions:
+    - "LiDAR"
+    - "TwinEco"
+    - "GEDI"
+    - "SAR"
+    - "UAV"
+    - "AI"
+    - "IoT"
+    - "DDDAS"
+    - "AGB"
+    - "MRV"
+    - "REDD+"
+    - "Sentinel-1"
+    - "Sentinel-2"
+    - "Landsat"
+    - "ICESat-2"
+    - "FDT"
+    - "CNN"
+    - "SSL"
+    # 常見專有概念詞（避免 sentence case 偵測誤判）
+    - "Forest"
+    - "Digital"
+    - "Twin"
+    - "Framework"
+
+# ============================================================================
+# A4 一頁限制
+# ============================================================================
+one_page:
+  paragraph_count_warn_threshold: 25
