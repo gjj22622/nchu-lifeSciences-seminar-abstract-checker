@@ -66,6 +66,35 @@ CACHE_PATH = SCRIPT_DIR / ".rules_cache.yaml"
 FETCH_TIMEOUT = 3  # seconds
 
 
+def _looks_like_latin_binomial_token(text: str) -> bool:
+    """偵測 run 內容是否為拉丁學名片段（避免誤判學名為違規斜體）。
+    支援：屬名（首大寫其餘小寫）、種小名（全小寫）、縮寫屬名（X.）、
+    縮寫屬名+種名（X. ssp）、屬名+種名整段、空白片段。
+    """
+    text = text.strip()
+    if not text:
+        return True
+    # 屬名單字：Pinus, Metasequoia
+    if re.fullmatch(r"[A-Z][a-z]{2,}", text):
+        return True
+    # 種小名：pinaster, glyptostroboides
+    if re.fullmatch(r"[a-z][a-z\-]{2,}", text):
+        return True
+    # 縮寫屬名：P., M.
+    if re.fullmatch(r"[A-Z]\.", text):
+        return True
+    # 縮寫屬名 + 空白 + 種小名：P. radiata
+    if re.fullmatch(r"[A-Z]\.\s+[a-z][a-z\-]+", text):
+        return True
+    # 完整屬名 + 空白 + 種小名：Pinus pinaster
+    if re.fullmatch(r"[A-Z][a-z]+\s+[a-z][a-z\-]+", text):
+        return True
+    # 包含三名法（subsp./var.）的學名
+    if re.fullmatch(r"[A-Z][a-z]+\s+[a-z\-]+(\s+(subsp|var|f)\.\s+[a-z\-]+)?", text):
+        return True
+    return False
+
+
 # =============================================================================
 # 規則載入器（遠端優先 + 本地 fallback + 過期警告）
 # =============================================================================
@@ -287,10 +316,11 @@ class AbstractChecker:
         bold_runs = [r for r in p.runs if r.bold and r.text.strip()]
         if bold_runs and not all(r.bold for r in p.runs if r.text.strip()):
             self.add(FAIL, "摘要正文", "正文出現部分粗體（規範：不用粗體）")
-        # 斜體
+        # 斜體（學名為合法斜體，需濾除避免 false positive）
         italic_runs = [r for r in p.runs if r.italic and r.text.strip()]
-        if italic_runs:
-            italic_text = " | ".join(r.text.strip()[:30] for r in italic_runs)
+        non_latin = [r for r in italic_runs if not _looks_like_latin_binomial_token(r.text)]
+        if non_latin:
+            italic_text = " | ".join(r.text.strip()[:30] for r in non_latin)
             self.add(WARN, "摘要正文", f"含斜體段落（規範：除學名外不用斜體）：{italic_text}")
         # AI 味禁用詞
         bad = self.rules["style"]["ai_bad_words_cn"] + self.rules["style"]["ai_bad_words_en"]
