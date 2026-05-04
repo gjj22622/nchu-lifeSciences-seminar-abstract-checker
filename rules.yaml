@@ -88,8 +88,12 @@ style:
 # 引用文獻規範（Zoological Studies 格式）
 # ============================================================================
 reference:
-  et_al_threshold: 4              # 達 4 位作者起用 et al.
-  et_al_list_count: 3             # 列前 3 位 + et al.
+  # Zool Stud 真實 published article 證據顯示三種做法並存（全列、列前 3 + et al、列前 5 + et al），
+  # 規範頁未明文強制。預設用「全列」（Zool Stud Vol 64-46 同樣全列 8+ 位），
+  # 老師若有偏好可自行調整。
+  et_al_severity: off             # off / warn / fail；off 表示不檢查 et al. 用法
+  et_al_threshold: 4              # （仍保留設定值供啟用時參考）
+  et_al_list_count: 3             # （仍保留設定值供啟用時參考）
   journal_abbrev_no_dot: true     # 期刊縮寫無句點
   volume_must_be_bold: true       # 卷號粗體
   doi_should_appear: false        # 114-1 老師更新版範例皆無 DOI

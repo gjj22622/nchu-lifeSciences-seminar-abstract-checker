@@ -386,21 +386,24 @@ class AbstractChecker:
                 if re.search(r"\.\s+([A-Z][a-z]+\.\s+)+[A-Z][a-z]*\.?\s+\d+:", text):
                     self.add(FAIL, f"引用#{idx}",
                              f"期刊縮寫帶句點（規範：縮寫無句點）：{short}")
-            # et al. 規則
-            m = re.match(r"^\d+\.\s+(.+?)\.\s+\d{4}\.", text)
-            if m:
-                authors_str = m.group(1)
-                has_et_al = "et al" in authors_str.lower()
-                if has_et_al:
-                    listed = len([a for a in authors_str.split(",") if "et al" not in a.lower()])
-                    if listed != et_al_list_count:
-                        self.add(WARN, f"引用#{idx}",
-                                 f"使用 et al. 但列出 {listed} 位（規範：列前 {et_al_list_count} 位 + et al.）")
-                else:
-                    listed = len(authors_str.split(","))
-                    if listed >= et_al_threshold:
-                        self.add(WARN, f"引用#{idx}",
-                                 f"作者數 = {listed}（≥{et_al_threshold} 應用「列前 {et_al_list_count} 位 + et al.」）")
+            # et al. 規則（Zool Stud 真實 article 三種做法並存，預設不檢查）
+            et_al_sev = cfg.get("et_al_severity", "warn")
+            if et_al_sev != "off":
+                m = re.match(r"^\d+\.\s+(.+?)\.\s+\d{4}\.", text)
+                if m:
+                    authors_str = m.group(1)
+                    has_et_al = "et al" in authors_str.lower()
+                    level = FAIL if et_al_sev == "fail" else WARN
+                    if has_et_al:
+                        listed = len([a for a in authors_str.split(",") if "et al" not in a.lower()])
+                        if listed != et_al_list_count:
+                            self.add(level, f"引用#{idx}",
+                                     f"使用 et al. 但列出 {listed} 位（規範：列前 {et_al_list_count} 位 + et al.）")
+                    else:
+                        listed = len(authors_str.split(","))
+                        if listed >= et_al_threshold:
+                            self.add(level, f"引用#{idx}",
+                                     f"作者數 = {listed}（≥{et_al_threshold} 應用「列前 {et_al_list_count} 位 + et al.」）")
             # 卷號粗體
             if cfg.get("volume_must_be_bold") and p not in bold_refs:
                 vol_match = re.search(r"\s(\d+):\d", text)
