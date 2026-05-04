@@ -88,12 +88,18 @@ style:
 # 引用文獻規範（Zoological Studies 格式）
 # ============================================================================
 reference:
-  # Zool Stud 真實 published article 證據顯示三種做法並存（全列、列前 3 + et al、列前 5 + et al），
-  # 規範頁未明文強制。預設用「全列」（Zool Stud Vol 64-46 同樣全列 8+ 位），
-  # 老師若有偏好可自行調整。
-  et_al_severity: off             # off / warn / fail；off 表示不檢查 et al. 用法
-  et_al_threshold: 4              # （仍保留設定值供啟用時參考）
-  et_al_list_count: 3             # （仍保留設定值供啟用時參考）
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # ⚠️ 強制規則（中興生科所黃盟元老師 2026-05-04 明確確認）
+  # ⚠️ 列前 5 位 + et al.；≤5 位全列；違反一律 [必改]，不可關閉
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # 證據：Zool Stud Vol 64-46 (https://zoolstud.sinica.edu.tw/Journals/64/64-46.pdf)
+  # 範例：Chan BKK, Wang T-W, Chen P-C, Lin C-W, Chan T-Y et al. 2016.
+  #
+  # ❌ 不要再採「列前 3 + et al.」或「全列」——已被老師明確否定
+  # ❌ 不要再花時間討論這個規則——這是 final
+  et_al_severity: fail            # fail（強制）。請勿改 warn 或 off
+  et_al_threshold: 6              # 達 6 位起用 et al.（≤5 全列）
+  et_al_list_count: 5             # 列前 5 位 + et al.
   journal_abbrev_no_dot: true     # 期刊縮寫無句點
   volume_must_be_bold: true       # 卷號粗體
   doi_should_appear: false        # 114-1 老師更新版範例皆無 DOI
